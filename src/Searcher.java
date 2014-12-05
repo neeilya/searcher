@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,7 +17,12 @@ public class Searcher extends JFrame {
 	/**
 	 * fields
 	 */
-	public JPanel toolsPanel, explorerPanel, resultPanel, statusPanel;
+	public JPanel toolsPanel,
+		explorerPanel,
+		resultPanel,
+		statusPanel,
+		threadPanel,
+		rightArea;
 	
 	// ------------------------------------------------------------------
 	
@@ -30,26 +36,22 @@ public class Searcher extends JFrame {
 		this.explorerPanel = new JPanel();
 		this.resultPanel = new JPanel();
 		this.statusPanel = new JPanel();
+		this.threadPanel = new JPanel();
+		this.rightArea = new JPanel();
 		
 		//setting layout
 		this.setLayout(new BorderLayout());
+		this.rightArea.setLayout(new BorderLayout());
 		
 		//adding panels
 		this.add(toolsPanel, BorderLayout.NORTH);
 		this.add(explorerPanel, BorderLayout.CENTER);
-		this.add(resultPanel, BorderLayout.EAST);
 		this.add(statusPanel, BorderLayout.SOUTH);
+		this.add(rightArea, BorderLayout.EAST);
 		
-		//temp backgrounds for distinguishing
-		this.toolsPanel.setBackground(Color.BLUE);
-		this.explorerPanel.setBackground(Color.YELLOW);
-		this.resultPanel.setBackground(Color.CYAN);
-		this.statusPanel.setBackground(Color.GRAY);
-
-		//setting appropriate sizes
-		this.toolsPanel.setPreferredSize(new Dimension(800, 70));
-		this.resultPanel.setPreferredSize(new Dimension(300, 200));
-		this.statusPanel.setPreferredSize(new Dimension(800, 40));
+		//add result, thread blocks
+		this.rightArea.add(resultPanel, BorderLayout.SOUTH);
+		this.rightArea.add(threadPanel, BorderLayout.NORTH);
 	}
 	
 	// ------------------------------------------------------------------
@@ -68,7 +70,32 @@ public class Searcher extends JFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
+		frame.construct();
 	}
 	
 	// ------------------------------------------------------------------
+	
+	/**
+	 * resize window function
+	 * @void
+	 */
+	public void construct()
+	{
+		//temp backgrounds for distinguishing
+		this.toolsPanel.setBackground(Color.BLUE);
+		this.explorerPanel.setBackground(Color.YELLOW);
+		this.resultPanel.setBackground(Color.CYAN);
+		this.statusPanel.setBackground(Color.GRAY);
+		this.threadPanel.setBackground(Color.GREEN);
+		
+		//construct layout
+		this.toolsPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
+		this.explorerPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.55), (int) (this.getHeight() * 0.8)));
+		this.rightArea.setPreferredSize(new Dimension((int) (this.getWidth() * 0.45), (int) (this.getHeight() * 0.8)));
+		this.statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
+		
+		//construct result and thread blocks
+		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
+		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
+	}
 }
