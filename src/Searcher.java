@@ -1,10 +1,13 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.io.File;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 
 /**
@@ -15,6 +18,11 @@ import javax.swing.JPanel;
 public class Searcher extends JFrame {
 
 	/**
+	 * SOME CONSTANTS
+	 */
+	private static String ROOT_DIRECTORY = "/";
+	
+	/**
 	 * fields
 	 */
 	public JPanel toolsPanel,
@@ -24,13 +32,21 @@ public class Searcher extends JFrame {
 		threadPanel,
 		rightArea;
 	
+	public JList<Object> jList;
+	
+	public DefaultListModel<Object> list;
+	
+	public JScrollPane pane;
+	
+	public File currentDirectory;
+	
 	// ------------------------------------------------------------------
 	
 	/**
 	 * Constructor
 	 */
 	public Searcher()
-	{
+	{		
 		//initializing panels
 		this.toolsPanel = new JPanel();
 		this.explorerPanel = new JPanel();
@@ -42,6 +58,7 @@ public class Searcher extends JFrame {
 		//setting layout
 		this.setLayout(new BorderLayout());
 		this.rightArea.setLayout(new BorderLayout());
+		this.explorerPanel.setLayout(new BorderLayout());
 		
 		//adding panels
 		this.add(toolsPanel, BorderLayout.NORTH);
@@ -52,6 +69,20 @@ public class Searcher extends JFrame {
 		//add result, thread blocks
 		this.rightArea.add(resultPanel, BorderLayout.SOUTH);
 		this.rightArea.add(threadPanel, BorderLayout.NORTH);
+		
+		// --------------------------------
+		
+		currentDirectory = new File(ROOT_DIRECTORY);
+	
+		list = getPreparedList(File.listRoots());
+		
+		jList = new JList<Object>(list);
+		
+		pane = new JScrollPane(jList);
+		
+		this.explorerPanel.add(pane);
+		
+
 	}
 	
 	// ------------------------------------------------------------------
@@ -71,6 +102,7 @@ public class Searcher extends JFrame {
 		frame.setVisible(true);
 		frame.setResizable(false);
 		frame.construct();
+		
 	}
 	
 	// ------------------------------------------------------------------
@@ -97,5 +129,24 @@ public class Searcher extends JFrame {
 		//construct result and thread blocks
 		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
 		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
+	}
+	
+	// ------------------------------------------------------------------
+	
+	/**
+	 * Prepare and return list of files
+	 * @param files - list of elements
+	 * @return DefaultListModel<Object> object
+	 */
+	private DefaultListModel<Object> getPreparedList(Object[] files)
+	{
+		DefaultListModel<Object> temp = new DefaultListModel<Object>();
+		
+		for(Object o: files)
+		{
+			temp.addElement(o);
+		}
+		
+		return temp;
 	}
 }
