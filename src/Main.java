@@ -46,18 +46,16 @@ public class Main extends JFrame {
 	private Button searchButton;
 	
 	public JList<Object> explorerJList;
-	public JList<File> selectedJList;
+	public JList<File> selectedJList, resultJList;
 	
 	public DefaultListModel<Object> explorerList;
-	public DefaultListModel<File> selectedList;
+	public DefaultListModel<File> selectedList, resultList;
 	
 	public JScrollPane explorerPane;
 	public JScrollPane selectedPane;
+	public JScrollPane resultPane;
 	
 	public File currentDirectory = null;
-	
-	
-	//private ArrayList<Searcher> threadList;
 	
 	// ------------------------------------------------------------------
 	
@@ -80,6 +78,7 @@ public class Main extends JFrame {
 		//setting layout
 		this.setLayout(new BorderLayout());
 		this.rightArea.setLayout(new BorderLayout());
+		this.resultPanel.setLayout(new BorderLayout());
 		this.explorerPanel.setLayout(new BorderLayout());
 		this.threadPanel.setLayout(new BorderLayout());
 		
@@ -88,6 +87,7 @@ public class Main extends JFrame {
 		this.add(explorerPanel, BorderLayout.CENTER);
 		this.add(statusPanel, BorderLayout.SOUTH);
 		this.add(rightArea, BorderLayout.EAST);
+
 		
 		//adding buttons
 		this.toolsPanel.add(searchButton);
@@ -104,21 +104,25 @@ public class Main extends JFrame {
 		
 		explorerList = new DefaultListModel<Object>();
 		selectedList = new DefaultListModel<File>();
+		resultList = new DefaultListModel<File>();
 		
 		explorerListUpdate(currentDirectory);
 		
 		explorerJList = new JList<Object>(explorerList);
 		selectedJList = new JList<File>(selectedList);
+		resultJList = new JList<File>(resultList);
 		
 		explorerPane = new JScrollPane(explorerJList);
 		selectedPane = new JScrollPane(selectedJList);
+		resultPane = new JScrollPane(resultJList);
 		
 		this.explorerPanel.add(explorerPane);
 		this.threadPanel.add(selectedPane);
+		this.resultPanel.add(resultPane);
 		
 		this.explorerJList.addMouseListener(new listClickListener());
 		this.explorerJList.addKeyListener(new listKeyListener());
-		
+	
 		//adding keyListeners to buttons
 		this.searchButton.addActionListener(new ActionListener() {
 			
@@ -127,6 +131,7 @@ public class Main extends JFrame {
 
 				Thread t = new Thread(new Searcher(currentDirectory));
 				t.start();
+				
 			}
 		});
 		
@@ -219,6 +224,45 @@ public class Main extends JFrame {
 			}
 			
 			super.keyPressed(e);
+		}
+	}
+	
+	// ------------------------------------------------------------------
+	
+	private class Searcher implements Runnable {
+		
+		private File directory;
+		
+		private DefaultListModel<File> results;
+		
+		public Searcher(File directory)
+		{
+			this.directory = directory;
+		}
+		
+		private void search(String path, String indent)
+		{
+			
+			File file = new File(path);
+			
+			for(File currentFile: file.listFiles())
+			{
+				if(currentFile.isDirectory())
+				{
+					search(currentFile.getAbsolutePath(), indent + "\t");
+				}
+				if(currentFile.getName().contains("search"))
+				{
+				 	resultList.addElement(currentFile);
+				}
+			}
+			
+		}
+
+		@Override
+		public void run()
+		{
+			search(this.directory.getPath(), "");
 		}
 	}
 	
