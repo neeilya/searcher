@@ -1,6 +1,9 @@
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -40,6 +43,8 @@ public class Main extends JFrame {
 		threadPanel,
 		rightArea;
 	
+	private Button searchButton;
+	
 	public JList<Object> explorerJList;
 	public JList<File> selectedJList;
 	
@@ -50,6 +55,9 @@ public class Main extends JFrame {
 	public JScrollPane selectedPane;
 	
 	public File currentDirectory = null;
+	
+	
+	//private ArrayList<Searcher> threadList;
 	
 	// ------------------------------------------------------------------
 	
@@ -66,6 +74,9 @@ public class Main extends JFrame {
 		this.threadPanel = new JPanel();
 		this.rightArea = new JPanel();
 		
+		//initializing buttons
+		this.searchButton = new Button("GO");
+		
 		//setting layout
 		this.setLayout(new BorderLayout());
 		this.rightArea.setLayout(new BorderLayout());
@@ -78,6 +89,9 @@ public class Main extends JFrame {
 		this.add(statusPanel, BorderLayout.SOUTH);
 		this.add(rightArea, BorderLayout.EAST);
 		
+		//adding buttons
+		this.toolsPanel.add(searchButton);
+		
 		//add result, thread blocks
 		this.rightArea.add(resultPanel, BorderLayout.SOUTH);
 		this.rightArea.add(threadPanel, BorderLayout.NORTH);
@@ -85,7 +99,9 @@ public class Main extends JFrame {
 		// --------------------------------
 		
 		currentDirectory = null;
-	
+		
+		//threadList = new ArrayList<Searcher>();
+		
 		explorerList = new DefaultListModel<Object>();
 		selectedList = new DefaultListModel<File>();
 		
@@ -102,6 +118,17 @@ public class Main extends JFrame {
 		
 		this.explorerJList.addMouseListener(new listClickListener());
 		this.explorerJList.addKeyListener(new listKeyListener());
+		
+		//adding keyListeners to buttons
+		this.searchButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				Thread t = new Thread(new Searcher(currentDirectory));
+				t.start();
+			}
+		});
 		
 	}
 	
