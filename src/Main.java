@@ -128,8 +128,8 @@ public class Main extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-
-				Thread t = new Thread(new Searcher(currentDirectory));
+				resultList.clear();
+				Thread t = new Thread(new Searcher(currentDirectory, "search"));
 				t.start();
 				
 			}
@@ -148,7 +148,7 @@ public class Main extends JFrame {
 		Main frame = new Main();
 		
 		//setting window properties
-		frame.setSize(800, 500);
+		frame.setSize(900, 500);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -229,40 +229,46 @@ public class Main extends JFrame {
 	
 	// ------------------------------------------------------------------
 	
+	/**
+	 * Searcher class
+	 * @author Ilya
+	 *
+	 */
 	private class Searcher implements Runnable {
 		
 		private File directory;
+		private String key;
 		
-		private DefaultListModel<File> results;
-		
-		public Searcher(File directory)
+		public Searcher(File directory, String key)
 		{
 			this.directory = directory;
+			this.key = key;
 		}
 		
-		private void search(String path, String indent)
+		private void search(String path)
 		{
-			
 			File file = new File(path);
 			
 			for(File currentFile: file.listFiles())
 			{
-				if(currentFile.isDirectory())
+				if(currentFile.isDirectory() && !currentFile.isHidden())
 				{
-					search(currentFile.getAbsolutePath(), indent + "\t");
+					search(currentFile.getAbsolutePath());
 				}
-				if(currentFile.getName().contains("search"))
+				else
 				{
-				 	resultList.addElement(currentFile);
+					if(currentFile.getName().contains(this.key))
+					{
+					 	resultList.addElement(currentFile);
+					}
 				}
 			}
-			
 		}
 
 		@Override
 		public void run()
 		{
-			search(this.directory.getPath(), "");
+			search(this.directory.getPath());
 		}
 	}
 	
