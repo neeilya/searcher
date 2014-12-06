@@ -182,6 +182,14 @@ public class Searcher extends JFrame {
 						}
 				}
 			}
+			else
+			{
+				if(e.getKeyCode() == BACKSPACE)
+				{
+					setDirectory(e);
+					explorerListUpdate(currentDirectory);
+				}
+			}
 			
 			super.keyPressed(e);
 		}
