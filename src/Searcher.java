@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -19,6 +21,14 @@ import javax.swing.JScrollPane;
 @SuppressWarnings("serial")
 public class Searcher extends JFrame {
 
+	
+	/**
+	 * Some CONSTS
+	 */
+	private final int ENTER = 10;
+	private final int BACKSPACE = 8;
+	
+	
 	/**
 	 * fields
 	 */
@@ -82,13 +92,34 @@ public class Searcher extends JFrame {
 		this.explorerPanel.add(pane);
 		
 		this.jList.addMouseListener(new listClickListener());
+		this.jList.addKeyListener(new listKeyListener());
+		
+	}
+	
+	// -----------------------------------------------------------------	
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		
+		//construct
+		Searcher frame = new Searcher();
+		
+		//setting window properties
+		frame.setSize(800, 500);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.setResizable(false);
+		frame.construct();
 		
 	}
 	
 	// ------------------------------------------------------------------
 	
 	/**
-	 * listClickListener - inner class so it can access our jList var
+	 * listClickListener
 	 * @author Ilya
 	 */
 	private class listClickListener extends MouseAdapter {
@@ -98,25 +129,106 @@ public class Searcher extends JFrame {
 			
 			if(event.getClickCount() == 2)
 			{
-				if(jList.getSelectedValue().getClass().equals(String.class))
-				{
-					currentDirectory = currentDirectory.getParentFile();
-					listUpdate(currentDirectory);
-				}
-				else
-				{
-					//setting currentDirectory
-					currentDirectory = (File) jList.getSelectedValue();
-					
-					if(currentDirectory.isDirectory())
-						listUpdate(currentDirectory);
-				}
+				setDirectory(event);
+				listUpdate(currentDirectory);
 				
 			}
 			
 			super.mouseClicked(event);
-		}
+		}	
+	}
+	
+	// ------------------------------------------------------------------
+	
+	/**
+	 * listKeyListener
+	 * @author Ilya
+	 */
+	private class listKeyListener extends KeyAdapter {
 		
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+			if(e.getKeyCode() == ENTER || e.getKeyCode() == BACKSPACE)
+			{
+				setDirectory(e);
+				listUpdate(currentDirectory);
+			}
+			
+			super.keyPressed(e);
+		}
+	}
+	
+	// ------------------------------------------------------------------
+	
+	/**
+	 * build window function
+	 * @void
+	 */
+	private void construct()
+	{
+		//temp backgrounds for distinguishing
+		this.toolsPanel.setBackground(Color.BLUE);
+		this.explorerPanel.setBackground(Color.YELLOW);
+		this.resultPanel.setBackground(Color.CYAN);
+		this.statusPanel.setBackground(Color.GRAY);
+		this.threadPanel.setBackground(Color.GREEN);
+		
+		//construct layout
+		this.toolsPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
+		this.explorerPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.55), (int) (this.getHeight() * 0.8)));
+		this.rightArea.setPreferredSize(new Dimension((int) (this.getWidth() * 0.45), (int) (this.getHeight() * 0.8)));
+		this.statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
+		
+		//construct result and thread blocks
+		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
+		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
+	}
+	
+	// ------------------------------------------------------------------
+	
+	/**
+	 * Assigning appropriate value for currentDirectory
+	 * @void
+	 */
+	private void setDirectory(Object key)
+	{
+		if(key.getClass().equals(MouseEvent.class))
+		{
+			if(jList.getSelectedValue().getClass().equals(String.class))
+			{
+				currentDirectory = currentDirectory.getParentFile();
+			}
+			else
+			{
+				//setting currentDirectory
+				if(((File) jList.getSelectedValue()).isDirectory())
+					currentDirectory = (File) jList.getSelectedValue();
+			}
+		}
+		else
+		{
+			switch((int) ((KeyEvent) key).getKeyCode())
+			{
+				case ENTER:
+					if(jList.getSelectedValue().getClass().equals(String.class))
+					{
+						currentDirectory = currentDirectory.getParentFile();
+					}
+					else
+					{
+						//setting currentDirectory
+						if(((File) jList.getSelectedValue()).isDirectory())
+							currentDirectory = (File) jList.getSelectedValue();
+					}
+					break;
+				case BACKSPACE:
+					if(currentDirectory != null)
+						currentDirectory = currentDirectory.getParentFile();
+					break;
+				default:
+			}
+		}
 	}
 	
 	// ------------------------------------------------------------------
@@ -145,49 +257,5 @@ public class Searcher extends JFrame {
 				list.addElement((File) f);
 			}
 		}
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		//construct
-		Searcher frame = new Searcher();
-		
-		//setting window properties
-		frame.setSize(800, 500);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setResizable(false);
-		frame.construct();
-		
-	}
-	
-	// ------------------------------------------------------------------
-	
-	/**
-	 * build window function
-	 * @void
-	 */
-	public void construct()
-	{
-		//temp backgrounds for distinguishing
-		this.toolsPanel.setBackground(Color.BLUE);
-		this.explorerPanel.setBackground(Color.YELLOW);
-		this.resultPanel.setBackground(Color.CYAN);
-		this.statusPanel.setBackground(Color.GRAY);
-		this.threadPanel.setBackground(Color.GREEN);
-		
-		//construct layout
-		this.toolsPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
-		this.explorerPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.55), (int) (this.getHeight() * 0.8)));
-		this.rightArea.setPreferredSize(new Dimension((int) (this.getWidth() * 0.45), (int) (this.getHeight() * 0.8)));
-		this.statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
-		
-		//construct result and thread blocks
-		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
-		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
 	}
 }
