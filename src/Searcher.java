@@ -247,7 +247,9 @@ public class Searcher extends JFrame {
 			
 			for(File f: directory.listFiles())
 			{
-				list.addElement((File) f);
+				//check if file is hidden (secured?)
+				if(!f.isHidden())
+					list.addElement((File) f);
 			}
 		}
 		else
