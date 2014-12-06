@@ -158,28 +158,30 @@ public class Searcher extends JFrame {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			
-			switch(e.getKeyCode())
+			if(!explorerJList.isSelectionEmpty())
 			{
-				case BACKSPACE:
-				case ENTER:
-					
-					setDirectory(e);
-					explorerListUpdate(currentDirectory);
-					
-					break;
-					
-				case SPACE:
-					if(!explorerJList.getSelectedValue().getClass().equals(String.class))
-					{
-						if(((File) explorerJList.getSelectedValue()).listFiles() != null)
-						{
-							if(!selectedList.contains((File) explorerJList.getSelectedValue()))
-								selectedList.addElement((File) explorerJList.getSelectedValue());
-						}
+				switch(e.getKeyCode())
+				{
+					case BACKSPACE:
+					case ENTER:
+						
+						setDirectory(e);
+						explorerListUpdate(currentDirectory);
+						
 						break;
-					}
+						
+					case SPACE:
+						if(!explorerJList.getSelectedValue().getClass().equals(String.class))
+						{
+							if(((File) explorerJList.getSelectedValue()).listFiles() != null)
+							{
+								if(!selectedList.contains((File) explorerJList.getSelectedValue()))
+									selectedList.addElement((File) explorerJList.getSelectedValue());
+							}
+							break;
+						}
+				}
 			}
-			
 			
 			super.keyPressed(e);
 		}
