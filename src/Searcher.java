@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.DefaultListModel;
@@ -18,11 +20,6 @@ import javax.swing.JScrollPane;
 public class Searcher extends JFrame {
 
 	/**
-	 * SOME CONSTANTS
-	 */
-	private static String ROOT_DIRECTORY = "/";
-	
-	/**
 	 * fields
 	 */
 	public JPanel toolsPanel,
@@ -38,7 +35,7 @@ public class Searcher extends JFrame {
 	
 	public JScrollPane pane;
 	
-	public File currentDirectory;
+	public File currentDirectory = null;
 	
 	// ------------------------------------------------------------------
 	
@@ -72,20 +69,83 @@ public class Searcher extends JFrame {
 		
 		// --------------------------------
 		
-		currentDirectory = new File(ROOT_DIRECTORY);
+		currentDirectory = null;
 	
-		list = getPreparedList(File.listRoots());
+		list = new DefaultListModel<Object>();
 		
-		jList = new JList<Object>(list);
+		listUpdate(currentDirectory);
+		
+		jList = new JList<>(list);
 		
 		pane = new JScrollPane(jList);
 		
 		this.explorerPanel.add(pane);
 		
-
+		this.jList.addMouseListener(new listClickListener());
+		
 	}
 	
 	// ------------------------------------------------------------------
+	
+	/**
+	 * listClickListener - inner class so it can access our jList var
+	 * @author Ilya
+	 */
+	private class listClickListener extends MouseAdapter {
+		
+		@Override
+		public void mouseClicked(MouseEvent event) {
+			
+			if(event.getClickCount() == 2)
+			{
+				if(jList.getSelectedValue().getClass().equals(String.class))
+				{
+					currentDirectory = currentDirectory.getParentFile();
+					listUpdate(currentDirectory);
+				}
+				else
+				{
+					//setting currentDirectory
+					currentDirectory = (File) jList.getSelectedValue();
+					
+					if(currentDirectory.isDirectory())
+						listUpdate(currentDirectory);
+				}
+				
+			}
+			
+			super.mouseClicked(event);
+		}
+		
+	}
+	
+	// ------------------------------------------------------------------
+	
+	/**
+	 * DefaultModelList update list function
+	 * @param files - list of File objects
+	 */
+	private void listUpdate(File directory)
+	{
+		list.clear();
+		
+		if(directory != null)
+		{
+			list.addElement((String) "..");
+			
+			for(File f: directory.listFiles())
+			{
+				list.addElement((File) f);
+			}
+		}
+		else
+		{
+			for(File f: File.listRoots())
+			{
+				list.addElement((File) f);
+			}
+		}
+	}
 	
 	/**
 	 * @param args
@@ -108,7 +168,7 @@ public class Searcher extends JFrame {
 	// ------------------------------------------------------------------
 	
 	/**
-	 * resize window function
+	 * build window function
 	 * @void
 	 */
 	public void construct()
@@ -129,24 +189,5 @@ public class Searcher extends JFrame {
 		//construct result and thread blocks
 		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
 		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
-	}
-	
-	// ------------------------------------------------------------------
-	
-	/**
-	 * Prepare and return list of files
-	 * @param files - list of elements
-	 * @return DefaultListModel<Object> object
-	 */
-	private DefaultListModel<Object> getPreparedList(Object[] files)
-	{
-		DefaultListModel<Object> temp = new DefaultListModel<Object>();
-		
-		for(Object o: files)
-		{
-			temp.addElement(o);
-		}
-		
-		return temp;
 	}
 }
