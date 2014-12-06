@@ -19,7 +19,7 @@ import javax.swing.JScrollPane;
  *
  */
 @SuppressWarnings("serial")
-public class Searcher extends JFrame {
+public class Main extends JFrame {
 
 	
 	/**
@@ -56,7 +56,7 @@ public class Searcher extends JFrame {
 	/**
 	 * Constructor
 	 */
-	public Searcher()
+	public Main()
 	{		
 		//initializing panels
 		this.toolsPanel = new JPanel();
@@ -113,7 +113,7 @@ public class Searcher extends JFrame {
 	public static void main(String[] args) {
 		
 		//construct
-		Searcher frame = new Searcher();
+		Main frame = new Main();
 		
 		//setting window properties
 		frame.setSize(800, 500);
