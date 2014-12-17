@@ -2,6 +2,8 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -15,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 
 /**
@@ -42,6 +45,8 @@ public class Main extends JFrame {
 		statusPanel,
 		threadPanel,
 		rightArea;
+	
+	public JTextField keyWordText;
 	
 	private Button searchButton;
 	
@@ -72,6 +77,9 @@ public class Main extends JFrame {
 		this.threadPanel = new JPanel();
 		this.rightArea = new JPanel();
 		
+		//init keyword
+		this.keyWordText = new JTextField();
+		
 		//initializing buttons
 		this.searchButton = new Button("GO");
 		
@@ -81,16 +89,17 @@ public class Main extends JFrame {
 		this.resultPanel.setLayout(new BorderLayout());
 		this.explorerPanel.setLayout(new BorderLayout());
 		this.threadPanel.setLayout(new BorderLayout());
+		this.toolsPanel.setLayout(new GridLayout(1, 0));
 		
 		//adding panels
 		this.add(toolsPanel, BorderLayout.NORTH);
 		this.add(explorerPanel, BorderLayout.CENTER);
 		this.add(statusPanel, BorderLayout.SOUTH);
 		this.add(rightArea, BorderLayout.EAST);
-
 		
 		//adding buttons
 		this.toolsPanel.add(searchButton);
+		this.toolsPanel.add(keyWordText);
 		
 		//add result, thread blocks
 		this.rightArea.add(resultPanel, BorderLayout.SOUTH);
@@ -129,7 +138,7 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				resultList.clear();
-				Thread t = new Thread(new Searcher(currentDirectory, "search"));
+				Thread t = new Thread(new Searcher(currentDirectory, keyWordText.getText()));
 				t.start();
 				
 			}
@@ -139,9 +148,6 @@ public class Main extends JFrame {
 	
 	// -----------------------------------------------------------------	
 	
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		
 		//construct
@@ -326,7 +332,7 @@ public class Main extends JFrame {
 				case ENTER:
 					if(explorerJList.getSelectedValue().getClass().equals(String.class))
 					{
-						currentDirectory = currentDirectory.getParentFile();
+//						currentDirectory = currentDirectory.getParentFile();
 					}
 					else
 					{
