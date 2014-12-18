@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.DefaultListModel;
@@ -44,16 +45,18 @@ public class GUI extends JFrame {
 		threadPanel,
 		rightArea;
 	
+	// tools panel stuff
 	public JTextField keyWordText;
+	public JButton searchButton, stopAllButton, stopSelectedButton;
 	
-	public JButton searchButton;
-	
+	// lists stuff
 	public JList<Object> explorerJList;
 	public JList<File> selectedJList, resultJList;
 	
 	public DefaultListModel<Object> explorerList;
 	public DefaultListModel<File> selectedList, resultList;
 	
+	// panes stuff
 	public JScrollPane explorerPane;
 	public JScrollPane selectedPane;
 	public JScrollPane resultPane;
@@ -71,6 +74,8 @@ public class GUI extends JFrame {
 	
 	// multithreading stuff
 	private ReentrantLock lock;
+	private ArrayList<Thread> threadList;
+	private static int threadCounter = 0;
 	
 	// ------------------------------------------------------------------------------------------------------------
 	
@@ -92,8 +97,10 @@ public class GUI extends JFrame {
 		//init keyword
 		this.keyWordText = new JTextField();
 		
-		//initializing buttons
+		//toolsPanel buttons
 		this.searchButton = new JButton("GO");
+		this.stopAllButton = new JButton("Stop all threads");
+		this.stopSelectedButton = new JButton("Stop selected thread");
 		
 		//setting layout
 		this.setLayout(new BorderLayout());
@@ -113,6 +120,12 @@ public class GUI extends JFrame {
 		//adding buttons
 		this.toolsPanel.add(searchButton);
 		this.toolsPanel.add(keyWordText);
+		this.toolsPanel.add(stopAllButton);
+		this.toolsPanel.add(stopSelectedButton);
+		
+		//disabling thread stopping buttons
+		this.stopAllButton.setEnabled(false);
+		this.stopSelectedButton.setEnabled(false);
 		
 		//add result, thread blocks
 		this.rightArea.add(resultPanel, BorderLayout.SOUTH);
@@ -146,7 +159,7 @@ public class GUI extends JFrame {
 		this.explorerJList.addKeyListener(new listKeyListener());
 		
 		// status panel stuff
-		this.statusLabel = new JLabel("Status: disabled");
+		this.statusLabel = new JLabel("Status: waiting");
 		this.foundCountLabel = new JLabel("Found: ");
 		this.threadsCountLabel = new JLabel("Threads active: ");
 		this.sizeCountLabel = new JLabel("Total size: 0");
@@ -157,6 +170,9 @@ public class GUI extends JFrame {
 		this.statusPanel.add(sizeCountLabel);
 		
 		this.selectedJList.addKeyListener(new selectedListKeyListener());
+		
+		// multithreading stuff
+		this.threadList = new ArrayList<Thread>();
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -265,6 +281,26 @@ public class GUI extends JFrame {
 	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
+	 * Add thread to threadList
+	 */
+	public void addThread(Thread t)
+	{
+		t.setName("#" + ++threadCounter);
+		this.threadList.add(t);
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				threadsCountLabel.setText("Threads active: " + threadCounter);
+			}
+		});
+	}
+	
+	// ------------------------------------------------------------------------------------------------------------
+	
+	/**
 	 * Add found file to GUI
 	 */
 	public void addResult(final File file)
@@ -288,6 +324,8 @@ public class GUI extends JFrame {
 		});
 		lock.unlock();
 	}
+	
+	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
 	 *  selected list key listener

@@ -1,6 +1,8 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -36,14 +38,23 @@ public class Main extends JFrame {
 				
 				gui.resultList.clear();
 				
-				if(!gui.keyWordText.getText().equals(""))
+				if(!gui.keyWordText.getText().equals("") && !gui.selectedList.isEmpty())
 				{
-					Thread t = new Thread(new Searcher(gui));
-					t.start();
+					DefaultListModel<File> tempModel = gui.selectedList;
+					
+					for(int i = 0; i < tempModel.getSize(); ++i)
+					{
+						File directory = tempModel.getElementAt(i);
+
+						Thread t = new Thread(new Searcher(gui, directory));
+						gui.addThread(t);
+						t.start();
+					}
+
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(null, "Input is empty");
+					JOptionPane.showMessageDialog(null, "Key word or list of selected directories is empty");
 				}
 				
 			}
