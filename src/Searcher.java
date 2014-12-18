@@ -82,11 +82,14 @@ public class Searcher extends Thread {
 	@Override
 	public void run()
 	{
+		// run recursive search
 		search(this.initialDirectory.getPath());
 
+		// update counter at GUI
 		gui.threadCounter--;
 		gui.threadsCountLabel.setText("Threads active: " + gui.threadCounter);
 		
+		// remove finished thread from GUI
 		for(int i = 0; i < gui.selectedList.size(); ++i)
 		{
 			final int t = i;
@@ -111,6 +114,7 @@ public class Searcher extends Thread {
 		{
 			gui.stopAllButton.setEnabled(false);
 			gui.stopSelectedButton.setEnabled(false);
+			gui.searchButton.setEnabled(true);
 			gui.statusLabel.setText("Status: waiting...");
 		}
 	}

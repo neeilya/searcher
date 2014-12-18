@@ -41,6 +41,7 @@ public class Main extends JFrame {
 				if(!gui.keyWordText.getText().equals("") && !gui.selectedList.isEmpty())
 				{
 					DefaultListModel<File> tempModel = gui.selectedList;
+					gui.searchButton.setEnabled(false);
 					
 					for(int i = 0; i < tempModel.getSize(); ++i)
 					{
