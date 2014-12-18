@@ -138,6 +138,8 @@ public class Searcher extends Thread {
 			
 			// reset toolsPanel
 			gui.searchParamsEnabled(true);
+			gui.directoriesSelectedCounter = 0;
+			gui.directoriesSelectedLabel.setText("Selected directories: " + gui.directoriesSelectedCounter);
 		}
 	}
 }

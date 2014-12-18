@@ -76,7 +76,7 @@ public class GUI extends JFrame {
 	
 	private long sizeCount = 0;
 	private int foundCount = 0;
-	private int directoriesSelectedCounter = 0;
+	public int directoriesSelectedCounter = 0;
 	
 	// multithreading stuff
 	private ReentrantLock lock;

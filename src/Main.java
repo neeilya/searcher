@@ -30,63 +30,75 @@ public class Main extends JFrame {
 		gui.setVisible(true);
 		gui.construct();
 		
+		// assign clickListener to search button
 		gui.searchButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
 				gui.clearAll();
-
-				if(!gui.keyWordText.getText().equals("") && !gui.selectedList.isEmpty())
+				
+				/**
+				 * Check if keyWord is empty
+				 */
+				if(gui.keyWordText.getText().equals(""))
 				{
-					
-					
-					/**
-					 * Check size range textfields
-					 */
-					if(!gui.sizeFromText.getText().equals(""))
-					{
-						try
-						{
-							Integer.parseInt(gui.sizeFromText.getText());
-						}
-						catch(NumberFormatException e)
-						{
-							JOptionPane.showMessageDialog(null, "size range must be typed by integers");
-							return;
-						}
-					}
-					
-					if(!gui.sizeToText.getText().equals(""))
-					{
-						try
-						{
-							Integer.parseInt(gui.sizeToText.getText());
-						}
-						catch(NumberFormatException e)
-						{
-							JOptionPane.showMessageDialog(null, "size range must be typed by integers");
-							return;
-						}
-					}
-					
-					DefaultListModel<File> tempModel = gui.selectedList;
-					
-					gui.searchParamsEnabled(false);
-					
-					for(int i = 0; i < tempModel.getSize(); ++i)
-					{
-						File directory = tempModel.getElementAt(i);
-
-						Searcher t = new Searcher(gui, directory);
-						gui.addThread(t);
-						t.start();
-					}
-
+					JOptionPane.showMessageDialog(null, "Key word cannot be empty");
+					return;
 				}
-				else
+				
+				/**
+				 * Check if list of directories is empty
+				 */
+				if(gui.selectedList.isEmpty())
 				{
-					JOptionPane.showMessageDialog(null, "Key word or list of selected directories is empty");
+					JOptionPane.showMessageDialog(null, "List of directories where to search cannot be empty");
+					return;
+				}
+				
+				/**
+				 * Check sizeFrom range textfields
+				 */
+				if(!gui.sizeFromText.getText().equals(""))
+				{
+					try
+					{
+						Integer.parseInt(gui.sizeFromText.getText());
+					}
+					catch(NumberFormatException e)
+					{
+						JOptionPane.showMessageDialog(null, "size range must be typed by integers");
+						return;
+					}
+				}
+				
+				/**
+				 * Check sizeTo range textfields
+				 */
+				if(!gui.sizeToText.getText().equals(""))
+				{
+					try
+					{
+						Integer.parseInt(gui.sizeToText.getText());
+					}
+					catch(NumberFormatException e)
+					{
+						JOptionPane.showMessageDialog(null, "size range must be typed by integers");
+						return;
+					}
+				}
+				
+				DefaultListModel<File> tempModel = gui.selectedList;
+				
+				gui.searchParamsEnabled(false);
+				
+				for(int i = 0; i < tempModel.getSize(); ++i)
+				{
+					File directory = tempModel.getElementAt(i);
+
+					Searcher t = new Searcher(gui, directory);
+					gui.addThread(t);
+					t.start();
 				}
 				
 			}
