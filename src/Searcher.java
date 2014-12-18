@@ -1,7 +1,5 @@
 import java.io.File;
 
-import javax.swing.SwingUtilities;
-
 /**
  * Searcher class
  * @author Ilya
@@ -33,14 +31,7 @@ public class Searcher implements Runnable {
 			{
 				if(currentFile.getName().contains(this.key))
 				{
-					SwingUtilities.invokeLater(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							gui.resultList.addElement(currentFile);
-						}
-					});
+					gui.addResult(currentFile);
 				}
 			}
 		}

@@ -11,14 +11,6 @@ import javax.swing.JOptionPane;
  */
 @SuppressWarnings("serial")
 public class Main extends JFrame {
-
-	
-	/**
-	 * Main class fields
-	 */
-	public GUI gui;
-	
-	// ------------------------------------------------------------------
 	
 	/**
 	 * Main method
@@ -47,7 +39,7 @@ public class Main extends JFrame {
 				if(!gui.keyWordText.getText().equals(""))
 				{
 					Thread t = new Thread(new Searcher(gui));
-					t.start();					
+					t.start();
 				}
 				else
 				{

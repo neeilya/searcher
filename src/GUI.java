@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 
 @SuppressWarnings("serial")
@@ -60,9 +62,15 @@ public class GUI extends JFrame {
 	
 	// status panel stuff
 	public JLabel statusLabel,
-		foundLabel,
+		foundCountLabel,
 		threadsCountLabel,
 		sizeCountLabel;
+	
+	private long sizeCount = 0;
+	private int foundCount = 0;
+	
+	// multithreading stuff
+	private ReentrantLock lock;
 	
 	// ------------------------------------------------------------------------------------------------------------
 	
@@ -71,6 +79,8 @@ public class GUI extends JFrame {
 	 */
 	public GUI()
 	{
+		this.lock = new ReentrantLock();
+		
 		//initializing panels
 		this.toolsPanel = new JPanel();
 		this.explorerPanel = new JPanel();
@@ -137,12 +147,12 @@ public class GUI extends JFrame {
 		
 		// status panel stuff
 		this.statusLabel = new JLabel("Status: disabled");
-		this.foundLabel = new JLabel("Found: ");
+		this.foundCountLabel = new JLabel("Found: ");
 		this.threadsCountLabel = new JLabel("Threads active: ");
 		this.sizeCountLabel = new JLabel("Total size: 0");
 		
 		this.statusPanel.add(statusLabel);
-		this.statusPanel.add(foundLabel);
+		this.statusPanel.add(foundCountLabel);
 		this.statusPanel.add(threadsCountLabel);
 		this.statusPanel.add(sizeCountLabel);
 		
@@ -255,9 +265,34 @@ public class GUI extends JFrame {
 	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
+	 * Add found file to GUI
+	 */
+	public void addResult(final File file)
+	{
+		lock.lock();
+		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+					
+			@Override
+			public void run()
+			{
+				resultList.addElement(file);
+
+				sizeCount = sizeCount + (file.length() / 1048576);
+				sizeCountLabel.setText("Total size: " + sizeCount + " megabytes");
+				
+				foundCount++;
+				foundCountLabel.setText("Found: " + foundCount + " files");
+			}
+		});
+		lock.unlock();
+	}
+	
+	/**
 	 *  selected list key listener
 	 */
-	class selectedListKeyListener extends KeyAdapter
+	public class selectedListKeyListener extends KeyAdapter
 	{
 		@Override
 		public void keyPressed(KeyEvent e)
