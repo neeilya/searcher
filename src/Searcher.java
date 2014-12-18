@@ -7,10 +7,18 @@ import java.io.File;
  */
 public class Searcher extends Thread {
 	
+	/**
+	 * Searcher class fields
+	 */
 	private GUI gui;
 	private String key;
 	public File initialDirectory;
 	
+	/**
+	 * Constructor
+	 * @param gui
+	 * @param initialDirectory
+	 */
 	public Searcher(GUI gui, File initialDirectory)
 	{
 		this.gui = gui;
@@ -18,6 +26,10 @@ public class Searcher extends Thread {
 		this.initialDirectory = initialDirectory;
 	}
 	
+	/**
+	 * Search algorythm
+	 * @param path
+	 */
 	private void search(String path)
 	{
 		if(interrupted())
@@ -41,7 +53,7 @@ public class Searcher extends Thread {
 			}
 			else
 			{
-				if(currentFile.getName().contains(this.key))
+				if(this.maskApproved(currentFile))
 				{
 					gui.addResult(currentFile);
 				}
@@ -49,7 +61,24 @@ public class Searcher extends Thread {
 		}
 
 	}
-
+	
+	/**
+	 * Check if file corresponds to specified mask
+	 * @param file
+	 * @return
+	 */
+	private boolean maskApproved(File file)
+	{
+		if(file.getName().contains(this.key))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Runnable
+	 */
 	@Override
 	public void run()
 	{
