@@ -46,7 +46,7 @@ public class Main extends JFrame {
 					{
 						File directory = tempModel.getElementAt(i);
 
-						Thread t = new Thread(new Searcher(gui, directory));
+						Searcher t = new Searcher(gui, directory);
 						gui.addThread(t);
 						t.start();
 					}

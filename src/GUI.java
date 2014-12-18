@@ -2,6 +2,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -74,7 +76,7 @@ public class GUI extends JFrame {
 	
 	// multithreading stuff
 	private ReentrantLock lock;
-	private ArrayList<Thread> threadList;
+	private ArrayList<Searcher> threadList;
 	private static int threadCounter = 0;
 	
 	// ------------------------------------------------------------------------------------------------------------
@@ -172,7 +174,30 @@ public class GUI extends JFrame {
 		this.selectedJList.addKeyListener(new selectedListKeyListener());
 		
 		// multithreading stuff
-		this.threadList = new ArrayList<Thread>();
+		this.threadList = new ArrayList<Searcher>();
+		
+		this.stopAllButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				for(int i = 0; i < threadList.size(); ++i)
+				{
+					threadList.get(i).interrupt();
+
+					try
+					{
+						threadList.get(i).join();
+					}
+					catch (InterruptedException e)
+					{
+
+					}
+				}
+				stopAllButton.setEnabled(false);
+				stopSelectedButton.setEnabled(false);
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -283,11 +308,21 @@ public class GUI extends JFrame {
 	/**
 	 * Add thread to threadList
 	 */
-	public void addThread(Thread t)
+	public void addThread(Searcher t)
 	{
 		t.setName("#" + ++threadCounter);
 		this.threadList.add(t);
 		
+		if(!stopAllButton.isEnabled())
+		{
+			stopAllButton.setEnabled(true);
+		}
+		
+		if(!stopSelectedButton.isEnabled())
+		{
+			stopSelectedButton.setEnabled(true);
+		}
+
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
@@ -322,6 +357,7 @@ public class GUI extends JFrame {
 				foundCountLabel.setText("Found: " + foundCount + " files");
 			}
 		});
+		
 		lock.unlock();
 	}
 	

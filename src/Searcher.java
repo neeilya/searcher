@@ -5,7 +5,7 @@ import java.io.File;
  * @author Ilya
  *
  */
-public class Searcher implements Runnable {
+public class Searcher extends Thread {
 	
 	private GUI gui;
 	private String key;
@@ -20,7 +20,17 @@ public class Searcher implements Runnable {
 	
 	private void search(String path)
 	{
-		
+		if(interrupted())
+		{
+			/**
+			 * Interrupt again because multiple calls of interrupted()
+			 * cause interrupted state to be false
+			 */
+			this.interrupt();
+
+			return;
+		}
+
 		File file = new File(path);
 		
 		for(final File currentFile: file.listFiles())
@@ -43,6 +53,6 @@ public class Searcher implements Runnable {
 	@Override
 	public void run()
 	{
-		search(this.initialDirectory.getPath());
+		search(this.initialDirectory.getPath());			
 	}
 }
