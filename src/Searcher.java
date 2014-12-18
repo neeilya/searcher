@@ -30,7 +30,7 @@ public class Searcher extends Thread {
 
 			return;
 		}
-
+		
 		File file = new File(path);
 		
 		for(final File currentFile: file.listFiles())
@@ -53,6 +53,27 @@ public class Searcher extends Thread {
 	@Override
 	public void run()
 	{
-		search(this.initialDirectory.getPath());			
+		search(this.initialDirectory.getPath());
+
+		gui.threadCounter--;
+		gui.threadsCountLabel.setText("Threads active: " + gui.threadCounter);
+		
+		// remove finished thread from threadList
+		for(int i = 0; i < gui.threadList.size(); ++i)
+		{
+			if(gui.threadList.get(i).getName().equals(this.getName()))
+			{
+				gui.threadList.remove(i);
+				break;
+			}
+		}
+		
+		// if all threads finished then update GUI
+		if(gui.threadList.isEmpty())
+		{
+			gui.stopAllButton.setEnabled(false);
+			gui.stopSelectedButton.setEnabled(false);
+			gui.statusLabel.setText("Status: waiting...");
+		}
 	}
 }

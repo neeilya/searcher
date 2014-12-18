@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -76,8 +77,8 @@ public class GUI extends JFrame {
 	
 	// multithreading stuff
 	private ReentrantLock lock;
-	private ArrayList<Searcher> threadList;
-	private static int threadCounter = 0;
+	public ArrayList<Searcher> threadList;
+	public int threadCounter = 0;
 	
 	// ------------------------------------------------------------------------------------------------------------
 	
@@ -194,8 +195,26 @@ public class GUI extends JFrame {
 
 					}
 				}
+
+				// update gui
 				stopAllButton.setEnabled(false);
 				stopSelectedButton.setEnabled(false);
+				
+				statusLabel.setText("Status: waiting...");
+
+				threadCounter = 0;
+				threadsCountLabel.setText("Threads active: " + threadCounter);
+				
+			}
+		});
+		
+		this.stopSelectedButton.addActionListener(new ActionListener()
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JOptionPane.showMessageDialog(null, threadList.toString());
 			}
 		});
 	}
@@ -224,6 +243,26 @@ public class GUI extends JFrame {
 		//construct result and thread blocks
 		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
 		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
+	}
+	
+	// ------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * Reset all labels
+	 */
+	public void clearAll()
+	{
+		resultList.clear();
+		statusLabel.setText("Status: searching...");
+		
+		foundCount = 0;
+		foundCountLabel.setText("Found: ");
+		
+		sizeCount = 0;
+		sizeCountLabel.setText("Total size: ");
+		
+		threadCounter = 0;
+		threadsCountLabel.setText("Threads active: ");
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------

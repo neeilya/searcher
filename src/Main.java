@@ -36,8 +36,8 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				gui.resultList.clear();
-				
+				gui.clearAll();
+
 				if(!gui.keyWordText.getText().equals("") && !gui.selectedList.isEmpty())
 				{
 					DefaultListModel<File> tempModel = gui.selectedList;
