@@ -17,7 +17,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -186,13 +185,18 @@ public class GUI extends JFrame {
 				{
 					threadList.get(i).interrupt();
 
+				}
+
+				for(int i = 0; i < threadList.size(); ++i)
+				{
 					try
 					{
 						threadList.get(i).join();
+						
 					}
 					catch (InterruptedException e)
 					{
-
+						
 					}
 				}
 
@@ -200,11 +204,7 @@ public class GUI extends JFrame {
 				stopAllButton.setEnabled(false);
 				stopSelectedButton.setEnabled(false);
 				
-				statusLabel.setText("Status: waiting...");
-
-				threadCounter = 0;
-				threadsCountLabel.setText("Threads active: " + threadCounter);
-				
+				statusLabel.setText("Status: stopped");				
 			}
 		});
 		
@@ -214,7 +214,11 @@ public class GUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				JOptionPane.showMessageDialog(null, threadList.toString());
+				for(int i = 0; i < selectedJList.getSelectedValuesList().size(); ++i)
+				{
+					if(!threadList.get(i).isInterrupted())
+						threadList.get(i).interrupt();					
+				}
 			}
 		});
 	}
@@ -349,7 +353,7 @@ public class GUI extends JFrame {
 	 */
 	public void addThread(Searcher t)
 	{
-		t.setName("#" + ++threadCounter);
+		t.setName(t.initialDirectory.getAbsolutePath());
 		this.threadList.add(t);
 		
 		if(!stopAllButton.isEnabled())
@@ -367,7 +371,7 @@ public class GUI extends JFrame {
 			@Override
 			public void run()
 			{
-				threadsCountLabel.setText("Threads active: " + threadCounter);
+				threadsCountLabel.setText("Threads active: " + ++threadCounter);
 			}
 		});
 	}

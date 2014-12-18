@@ -9,7 +9,7 @@ public class Searcher extends Thread {
 	
 	private GUI gui;
 	private String key;
-	private File initialDirectory;
+	public File initialDirectory;
 	
 	public Searcher(GUI gui, File initialDirectory)
 	{
@@ -57,6 +57,15 @@ public class Searcher extends Thread {
 
 		gui.threadCounter--;
 		gui.threadsCountLabel.setText("Threads active: " + gui.threadCounter);
+		
+		for(int i = 0; i < gui.selectedList.size(); ++i)
+		{
+			final int t = i;
+			if(gui.selectedList.get(i).getAbsolutePath().equals(this.initialDirectory.getAbsolutePath()))
+			{
+				gui.selectedList.remove(t);
+			}
+		}
 		
 		// remove finished thread from threadList
 		for(int i = 0; i < gui.threadList.size(); ++i)
