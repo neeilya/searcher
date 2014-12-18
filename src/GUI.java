@@ -1,5 +1,4 @@
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -20,6 +19,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 
@@ -48,7 +48,7 @@ public class GUI extends JFrame {
 		rightArea;
 	
 	// tools panel stuff
-	public JTextField keyWordText;
+	public JTextField keyWordText, sizeFromText, sizeToText;
 	public JButton searchButton, stopAllButton, stopSelectedButton;
 	
 	// lists stuff
@@ -69,6 +69,8 @@ public class GUI extends JFrame {
 	public JLabel statusLabel,
 		foundCountLabel,
 		threadsCountLabel,
+		sizeFromLabel,
+		sizeToLabel,
 		sizeCountLabel;
 	
 	private long sizeCount = 0;
@@ -96,42 +98,51 @@ public class GUI extends JFrame {
 		this.threadPanel = new JPanel();
 		this.rightArea = new JPanel();
 		
-		//init keyword
-		this.keyWordText = new JTextField();
 		
-		//toolsPanel buttons
+		//toolsPanel stuff
 		this.searchButton = new JButton("GO");
 		this.stopAllButton = new JButton("Stop all threads");
 		this.stopSelectedButton = new JButton("Stop selected thread");
+		this.sizeFromLabel = new JLabel("size from (mb)", SwingConstants.RIGHT);
+		this.sizeToLabel = new JLabel("size to (mb)", SwingConstants.RIGHT);
+		
+		 //init keyword
+		this.keyWordText = new JTextField();
+		this.sizeFromText = new JTextField();
+		this.sizeToText = new JTextField();
 		
 		//setting layout
 		this.setLayout(new BorderLayout());
-		this.rightArea.setLayout(new BorderLayout());
+		this.rightArea.setLayout(new GridLayout(2, 1));
 		this.resultPanel.setLayout(new BorderLayout());
 		this.explorerPanel.setLayout(new BorderLayout());
 		this.threadPanel.setLayout(new GridLayout(0, 1));
 		this.toolsPanel.setLayout(new GridLayout(1, 0));
 		this.statusPanel.setLayout(new GridLayout(1, 0));
 		
+		//toolsPanel adding buttons and textFields
+		this.toolsPanel.add(searchButton);
+		this.toolsPanel.add(keyWordText);
+		this.toolsPanel.add(sizeFromLabel);
+		this.toolsPanel.add(sizeFromText);
+		this.toolsPanel.add(sizeToLabel);
+		this.toolsPanel.add(sizeToText);
+		this.toolsPanel.add(stopAllButton);
+		this.toolsPanel.add(stopSelectedButton);
+
 		//adding panels
 		this.add(toolsPanel, BorderLayout.NORTH);
 		this.add(explorerPanel, BorderLayout.CENTER);
 		this.add(statusPanel, BorderLayout.SOUTH);
 		this.add(rightArea, BorderLayout.EAST);
 		
-		//adding buttons
-		this.toolsPanel.add(searchButton);
-		this.toolsPanel.add(keyWordText);
-		this.toolsPanel.add(stopAllButton);
-		this.toolsPanel.add(stopSelectedButton);
-		
 		//disabling thread stopping buttons
 		this.stopAllButton.setEnabled(false);
 		this.stopSelectedButton.setEnabled(false);
 		
 		//add result, thread blocks
-		this.rightArea.add(resultPanel, BorderLayout.SOUTH);
-		this.rightArea.add(threadPanel, BorderLayout.NORTH);
+		this.rightArea.add(threadPanel);
+		this.rightArea.add(resultPanel);
 		
 		// --------------------------------
 		
@@ -231,22 +242,12 @@ public class GUI extends JFrame {
 	 */
 	public void construct()
 	{
-		//temp backgrounds for distinguishing
-		this.toolsPanel.setBackground(Color.BLUE);
-		this.explorerPanel.setBackground(Color.YELLOW);
-		this.resultPanel.setBackground(Color.CYAN);
-		this.statusPanel.setBackground(Color.LIGHT_GRAY);
-		this.threadPanel.setBackground(Color.GREEN);
-		
 		//construct layout
 		this.toolsPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
 		this.explorerPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.55), (int) (this.getHeight() * 0.8)));
 		this.rightArea.setPreferredSize(new Dimension((int) (this.getWidth() * 0.45), (int) (this.getHeight() * 0.8)));
 		this.statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
 		
-		//construct result and thread blocks
-		this.resultPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
-		this.threadPanel.setPreferredSize(new Dimension(this.rightArea.getSize().width, (int) (this.rightArea.getPreferredSize().height * 0.5)));
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------
@@ -267,6 +268,15 @@ public class GUI extends JFrame {
 		
 		threadCounter = 0;
 		threadsCountLabel.setText("Threads active: ");
+	}
+	
+	// ------------------------------------------------------------------------------------------------------------
+	
+	public void searchParamsEnabled(boolean enabled)
+	{
+		this.searchButton.setEnabled(enabled);	
+		this.sizeFromText.setEnabled(enabled);
+		this.sizeToText.setEnabled(enabled);
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------

@@ -24,11 +24,10 @@ public class Main extends JFrame {
 		final GUI gui = new GUI();
 		
 		//setting window properties
-		gui.setSize(900, 500);
+		gui.setSize(1100, 700);
 		gui.setLocationRelativeTo(null);
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gui.setVisible(true);
-		gui.setResizable(false);
 		gui.construct();
 		
 		gui.searchButton.addActionListener(new ActionListener() {
@@ -41,7 +40,8 @@ public class Main extends JFrame {
 				if(!gui.keyWordText.getText().equals("") && !gui.selectedList.isEmpty())
 				{
 					DefaultListModel<File> tempModel = gui.selectedList;
-					gui.searchButton.setEnabled(false);
+					
+					gui.searchParamsEnabled(false);
 					
 					for(int i = 0; i < tempModel.getSize(); ++i)
 					{

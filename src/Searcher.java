@@ -116,6 +116,9 @@ public class Searcher extends Thread {
 			gui.stopSelectedButton.setEnabled(false);
 			gui.searchButton.setEnabled(true);
 			gui.statusLabel.setText("Status: waiting...");
+			
+			// reset toolsPanel
+			gui.searchParamsEnabled(true);
 		}
 	}
 }
