@@ -71,6 +71,25 @@ public class Searcher extends Thread {
 	{
 		if(file.getName().contains(this.key))
 		{
+			// if sizeFrom only specified
+			if(!gui.sizeFromText.getText().equals("") && gui.sizeToText.getText().equals(""))
+			{
+				return (file.length() / (1024 * 1024) > Integer.parseInt(gui.sizeFromText.getText()));
+			}
+			
+			// if sizeTo only specified
+			if(gui.sizeFromText.getText().equals("") && !gui.sizeToText.getText().equals(""))
+			{
+				return (file.length() / (1024 * 1024) < Integer.parseInt(gui.sizeToText.getText()));
+			}
+			
+			// if both sizeTo AND sizeFrom specified
+			if(!gui.sizeFromText.getText().equals("") && !gui.sizeToText.getText().equals(""))
+			{
+				return (file.length() / (1024 * 1024) > Integer.parseInt(gui.sizeFromText.getText())
+						&& file.length() / (1024 * 1024) < Integer.parseInt(gui.sizeToText.getText()));
+			}
+			
 			return true;
 		}
 		return false;

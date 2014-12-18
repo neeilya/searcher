@@ -39,6 +39,37 @@ public class Main extends JFrame {
 
 				if(!gui.keyWordText.getText().equals("") && !gui.selectedList.isEmpty())
 				{
+					
+					
+					/**
+					 * Check size range textfields
+					 */
+					if(!gui.sizeFromText.getText().equals(""))
+					{
+						try
+						{
+							Integer.parseInt(gui.sizeFromText.getText());
+						}
+						catch(NumberFormatException e)
+						{
+							JOptionPane.showMessageDialog(null, "size range must be typed by integers");
+							return;
+						}
+					}
+					
+					if(!gui.sizeToText.getText().equals(""))
+					{
+						try
+						{
+							Integer.parseInt(gui.sizeToText.getText());
+						}
+						catch(NumberFormatException e)
+						{
+							JOptionPane.showMessageDialog(null, "size range must be typed by integers");
+							return;
+						}
+					}
+					
 					DefaultListModel<File> tempModel = gui.selectedList;
 					
 					gui.searchParamsEnabled(false);

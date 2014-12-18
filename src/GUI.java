@@ -274,6 +274,7 @@ public class GUI extends JFrame {
 	
 	public void searchParamsEnabled(boolean enabled)
 	{
+		this.keyWordText.setEnabled(enabled);
 		this.searchButton.setEnabled(enabled);	
 		this.sizeFromText.setEnabled(enabled);
 		this.sizeToText.setEnabled(enabled);
