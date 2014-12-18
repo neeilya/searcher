@@ -71,10 +71,12 @@ public class GUI extends JFrame {
 		threadsCountLabel,
 		sizeFromLabel,
 		sizeToLabel,
+		directoriesSelectedLabel,
 		sizeCountLabel;
 	
 	private long sizeCount = 0;
 	private int foundCount = 0;
+	private int directoriesSelectedCounter = 0;
 	
 	// multithreading stuff
 	private ReentrantLock lock;
@@ -97,8 +99,7 @@ public class GUI extends JFrame {
 		this.statusPanel = new JPanel();
 		this.threadPanel = new JPanel();
 		this.rightArea = new JPanel();
-		
-		
+				
 		//toolsPanel stuff
 		this.searchButton = new JButton("GO");
 		this.stopAllButton = new JButton("Stop all threads");
@@ -129,7 +130,7 @@ public class GUI extends JFrame {
 		this.toolsPanel.add(sizeToText);
 		this.toolsPanel.add(stopAllButton);
 		this.toolsPanel.add(stopSelectedButton);
-
+		
 		//adding panels
 		this.add(toolsPanel, BorderLayout.NORTH);
 		this.add(explorerPanel, BorderLayout.CENTER);
@@ -146,6 +147,20 @@ public class GUI extends JFrame {
 		
 		// --------------------------------
 		
+		
+		// status panel stuff
+		this.statusLabel = new JLabel("Status: waiting");
+		this.directoriesSelectedLabel = new JLabel("Selected directories: ");
+		this.foundCountLabel = new JLabel("Found: ");
+		this.threadsCountLabel = new JLabel("Threads active: ");
+		this.sizeCountLabel = new JLabel("Total size: 0");
+		
+		this.statusPanel.add(statusLabel);
+		this.statusPanel.add(foundCountLabel);
+		this.statusPanel.add(threadsCountLabel);
+		this.statusPanel.add(directoriesSelectedLabel);
+		this.statusPanel.add(sizeCountLabel);
+
 		currentDirectory = null;
 		
 		//threadList = new ArrayList<Searcher>();
@@ -170,17 +185,6 @@ public class GUI extends JFrame {
 		
 		this.explorerJList.addMouseListener(new listClickListener());
 		this.explorerJList.addKeyListener(new listKeyListener());
-		
-		// status panel stuff
-		this.statusLabel = new JLabel("Status: waiting");
-		this.foundCountLabel = new JLabel("Found: ");
-		this.threadsCountLabel = new JLabel("Threads active: ");
-		this.sizeCountLabel = new JLabel("Total size: 0");
-		
-		this.statusPanel.add(statusLabel);
-		this.statusPanel.add(foundCountLabel);
-		this.statusPanel.add(threadsCountLabel);
-		this.statusPanel.add(sizeCountLabel);
 		
 		this.selectedJList.addKeyListener(new selectedListKeyListener());
 		
@@ -243,10 +247,10 @@ public class GUI extends JFrame {
 	public void construct()
 	{
 		//construct layout
-		this.toolsPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
+		this.toolsPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.05)));
 		this.explorerPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.55), (int) (this.getHeight() * 0.8)));
 		this.rightArea.setPreferredSize(new Dimension((int) (this.getWidth() * 0.45), (int) (this.getHeight() * 0.8)));
-		this.statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.1)));
+		this.statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (this.getHeight() * 0.05)));
 		
 	}
 	
@@ -336,6 +340,9 @@ public class GUI extends JFrame {
 	{
 		explorerList.clear();
 		selectedList.clear();
+		
+		directoriesSelectedCounter = 0;
+		directoriesSelectedLabel.setText("Selected directories: 0");
 		
 		if(directory != null)
 		{
@@ -430,6 +437,8 @@ public class GUI extends JFrame {
 				if(e.getKeyCode() == SPACE)
 				{
 					selectedList.remove(selectedJList.getSelectedIndex());
+					directoriesSelectedCounter--;
+					directoriesSelectedLabel.setText("Selected directories: " + directoriesSelectedCounter);
 				}				
 			}
 			
@@ -452,7 +461,6 @@ public class GUI extends JFrame {
 			{
 				setDirectory(event);
 				explorerListUpdate(currentDirectory);
-				
 			}
 			
 			super.mouseClicked(event);
@@ -489,6 +497,10 @@ public class GUI extends JFrame {
 							{
 								if(!selectedList.contains((File) explorerJList.getSelectedValue()))
 									selectedList.addElement((File) explorerJList.getSelectedValue());
+								
+								//update selected directories counter	
+								directoriesSelectedCounter++;
+								directoriesSelectedLabel.setText("Selected directories: " + directoriesSelectedCounter);
 							}
 							break;
 						}
