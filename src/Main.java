@@ -1,8 +1,6 @@
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +11,11 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -48,7 +49,7 @@ public class Main extends JFrame {
 	
 	public JTextField keyWordText;
 	
-	private Button searchButton;
+	private JButton searchButton;
 	
 	public JList<Object> explorerJList;
 	public JList<File> selectedJList, resultJList;
@@ -61,6 +62,12 @@ public class Main extends JFrame {
 	public JScrollPane resultPane;
 	
 	public File currentDirectory = null;
+	
+	// status panel stuff
+	JLabel statusLabel,
+		foundLabel,
+		threadsCountLabel,
+		sizeCountLabel;
 	
 	// ------------------------------------------------------------------
 	
@@ -81,15 +88,16 @@ public class Main extends JFrame {
 		this.keyWordText = new JTextField();
 		
 		//initializing buttons
-		this.searchButton = new Button("GO");
+		this.searchButton = new JButton("GO");
 		
 		//setting layout
 		this.setLayout(new BorderLayout());
 		this.rightArea.setLayout(new BorderLayout());
 		this.resultPanel.setLayout(new BorderLayout());
 		this.explorerPanel.setLayout(new BorderLayout());
-		this.threadPanel.setLayout(new BorderLayout());
+		this.threadPanel.setLayout(new GridLayout(0, 1));
 		this.toolsPanel.setLayout(new GridLayout(1, 0));
+		this.statusPanel.setLayout(new GridLayout(1, 0));
 		
 		//adding panels
 		this.add(toolsPanel, BorderLayout.NORTH);
@@ -131,6 +139,17 @@ public class Main extends JFrame {
 		
 		this.explorerJList.addMouseListener(new listClickListener());
 		this.explorerJList.addKeyListener(new listKeyListener());
+		
+		// status panel stuff
+		this.statusLabel = new JLabel("Status: disabled");
+		this.foundLabel = new JLabel("Found: ");
+		this.threadsCountLabel = new JLabel("Threads active: ");
+		this.sizeCountLabel = new JLabel("Total size: 0");
+		
+		this.statusPanel.add(statusLabel);
+		this.statusPanel.add(foundLabel);
+		this.statusPanel.add(threadsCountLabel);
+		this.statusPanel.add(sizeCountLabel);
 	
 		//adding keyListeners to buttons
 		this.searchButton.addActionListener(new ActionListener() {
@@ -138,16 +157,30 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				resultList.clear();
-				Thread t = new Thread(new Searcher(currentDirectory, keyWordText.getText()));
-				t.start();
+				if(!keyWordText.getText().equals(""))
+				{
+					Thread t = new Thread(new Searcher(currentDirectory, keyWordText.getText()));
+					t.start();					
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Input is empty");
+				}
 				
 			}
 		});
 		
+		//delete from selected directories panel
+		this.selectedJList.addKeyListener(new selectedListKeyListener());
+		
 	}
 	
 	// -----------------------------------------------------------------	
-	
+
+	/**
+	 * Main method
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		//construct
@@ -161,6 +194,28 @@ public class Main extends JFrame {
 		frame.setResizable(false);
 		frame.construct();
 		
+	}
+	
+	// ------------------------------------------------------------------
+	
+	/**
+	 *  selected list key listener
+	 */
+	private class selectedListKeyListener extends KeyAdapter
+	{
+		@Override
+		public void keyPressed(KeyEvent e)
+		{
+			if(!selectedJList.isSelectionEmpty())
+			{
+				if(e.getKeyCode() == SPACE)
+				{
+					selectedList.remove(selectedJList.getSelectedIndex());
+				}				
+			}
+			
+			super.keyPressed(e);
+		}
 	}
 	
 	// ------------------------------------------------------------------
@@ -257,7 +312,7 @@ public class Main extends JFrame {
 			
 			for(File currentFile: file.listFiles())
 			{
-				if(currentFile.isDirectory() && !currentFile.isHidden())
+				if(currentFile.isDirectory() && currentFile.listFiles() != null)
 				{
 					search(currentFile.getAbsolutePath());
 				}
@@ -265,10 +320,11 @@ public class Main extends JFrame {
 				{
 					if(currentFile.getName().contains(this.key))
 					{
-					 	resultList.addElement(currentFile);
+						resultList.addElement(currentFile);
 					}
 				}
 			}
+
 		}
 
 		@Override
@@ -290,7 +346,7 @@ public class Main extends JFrame {
 		this.toolsPanel.setBackground(Color.BLUE);
 		this.explorerPanel.setBackground(Color.YELLOW);
 		this.resultPanel.setBackground(Color.CYAN);
-		this.statusPanel.setBackground(Color.GRAY);
+		this.statusPanel.setBackground(Color.LIGHT_GRAY);
 		this.threadPanel.setBackground(Color.GREEN);
 		
 		//construct layout
