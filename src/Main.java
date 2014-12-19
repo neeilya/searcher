@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,6 +25,7 @@ public class Main extends JFrame {
 		
 		//setting window properties
 		gui.setSize(1100, 700);
+		gui.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		gui.setLocationRelativeTo(null);
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gui.setVisible(true);
@@ -91,6 +94,21 @@ public class Main extends JFrame {
 					catch(NumberFormatException e)
 					{
 						JOptionPane.showMessageDialog(null, "size range must be typed by integers");
+						return;
+					}
+				}
+				
+				/**
+				 * Check creation date mask
+				 */
+				if(!gui.timeCreationRangeLabel.equals(""))
+				{
+					Pattern pattern = Pattern.compile("^(0[1-9]|[1-2][0-9]|3[0-1])\\/(0[1-9]|1[0-2])\\/[0-9]{4}$");
+					Matcher matcher = pattern.matcher(gui.timeCreationRangeText.getText());
+					
+					if(!matcher.matches())
+					{
+						JOptionPane.showMessageDialog(null, "Incorrect date format. Use dd/mm/YYYY");
 						return;
 					}
 				}

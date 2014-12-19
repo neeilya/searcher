@@ -48,7 +48,7 @@ public class GUI extends JFrame {
 		rightArea;
 	
 	// tools panel stuff
-	public JTextField keyWordText, sizeFromText, sizeToText;
+	public JTextField keyWordText, sizeFromText, sizeToText, timeCreationRangeText;
 	public JButton searchButton, stopAllButton, stopSelectedButton;
 	
 	// lists stuff
@@ -72,6 +72,7 @@ public class GUI extends JFrame {
 		sizeFromLabel,
 		sizeToLabel,
 		directoriesSelectedLabel,
+		timeCreationRangeLabel,
 		sizeCountLabel;
 	
 	private long sizeCount = 0;
@@ -106,11 +107,13 @@ public class GUI extends JFrame {
 		this.stopSelectedButton = new JButton("Stop selected thread");
 		this.sizeFromLabel = new JLabel("size from (mb)", SwingConstants.RIGHT);
 		this.sizeToLabel = new JLabel("size to (mb)", SwingConstants.RIGHT);
+		this.timeCreationRangeLabel = new JLabel("<html>Time creation range<br/>dd/mm/YYYY-dd/mm/YYY</html>", SwingConstants.RIGHT);
 		
-		 //init keyword
+		 //init textFields
 		this.keyWordText = new JTextField();
 		this.sizeFromText = new JTextField();
 		this.sizeToText = new JTextField();
+		this.timeCreationRangeText = new JTextField();
 		
 		//setting layout
 		this.setLayout(new BorderLayout());
@@ -128,6 +131,8 @@ public class GUI extends JFrame {
 		this.toolsPanel.add(sizeFromText);
 		this.toolsPanel.add(sizeToLabel);
 		this.toolsPanel.add(sizeToText);
+		this.toolsPanel.add(timeCreationRangeLabel);
+		this.toolsPanel.add(timeCreationRangeText);
 		this.toolsPanel.add(stopAllButton);
 		this.toolsPanel.add(stopSelectedButton);
 		
@@ -286,6 +291,7 @@ public class GUI extends JFrame {
 		this.searchButton.setEnabled(enabled);	
 		this.sizeFromText.setEnabled(enabled);
 		this.sizeToText.setEnabled(enabled);
+		this.timeCreationRangeText.setEnabled(enabled);
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------
