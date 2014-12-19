@@ -1,8 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -36,6 +34,7 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// reset count values from previous research if there was one
 				gui.clearAll();
 				
 				/**
@@ -88,16 +87,16 @@ public class Main extends JFrame {
 					}
 				}
 				
-				DefaultListModel<File> tempModel = gui.selectedList;
-				
+				// disable corresponding GUI buttons while searching
 				gui.searchParamsEnabled(false);
 				
-				for(int i = 0; i < tempModel.getSize(); ++i)
+				// run thread for each selected directory
+				for(int i = 0; i < gui.selectedList.getSize(); ++i)
 				{
-					File directory = tempModel.getElementAt(i);
-
-					Searcher t = new Searcher(gui, directory);
+					Searcher t = new Searcher(gui, gui.selectedList.getElementAt(i));
+					
 					gui.addThread(t);
+					
 					t.start();
 				}
 				

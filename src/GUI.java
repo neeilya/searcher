@@ -276,6 +276,10 @@ public class GUI extends JFrame {
 	
 	// ------------------------------------------------------------------------------------------------------------
 	
+	/**
+	 * Enable/disable buttons
+	 * @param enabled
+	 */
 	public void searchParamsEnabled(boolean enabled)
 	{
 		this.keyWordText.setEnabled(enabled);

@@ -35,12 +35,7 @@ public class Searcher extends Thread {
 	{
 		if(interrupted())
 		{
-			/**
-			 * Interrupt again because multiple calls of interrupted()
-			 * cause interrupted state to be false
-			 */
 			throw new InterruptedException("Interrupted");
-
 		}
 		
 		File file = new File(path);
