@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.DefaultListModel;
@@ -53,10 +54,12 @@ public class GUI extends JFrame {
 	
 	// lists stuff
 	public JList<Object> explorerJList;
-	public JList<File> selectedJList, resultJList;
+	public JList<File> selectedJList;
+	public JList<String> resultJList;
 	
 	public DefaultListModel<Object> explorerList;
-	public DefaultListModel<File> selectedList, resultList;
+	public DefaultListModel<File> selectedList;
+	public DefaultListModel<String> resultList;
 	
 	// panes stuff
 	public JScrollPane explorerPane;
@@ -177,13 +180,13 @@ public class GUI extends JFrame {
 		
 		explorerList = new DefaultListModel<Object>();
 		selectedList = new DefaultListModel<File>();
-		resultList = new DefaultListModel<File>();
+		resultList = new DefaultListModel<String>();
 		
 		explorerListUpdate(currentDirectory);
 		
 		explorerJList = new JList<Object>(explorerList);
 		selectedJList = new JList<File>(selectedList);
-		resultJList = new JList<File>(resultList);
+		resultJList = new JList<String>(resultList);
 		
 		explorerPane = new JScrollPane(explorerJList);
 		selectedPane = new JScrollPane(selectedJList);
@@ -432,7 +435,10 @@ public class GUI extends JFrame {
 			@Override
 			public void run()
 			{
-				resultList.addElement(file);
+				String fileName = file.toString();
+				fileName += ", last modified: " + (new Date(file.lastModified())).toString();
+				fileName += " , size: " + file.length() / (1024 * 1024) + " mbs";
+				resultList.addElement(fileName);
 
 				sizeCount = sizeCount + (file.length() / 1048576);
 				sizeCountLabel.setText("Total size: " + sizeCount + " megabytes");

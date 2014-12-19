@@ -118,45 +118,50 @@ public class Searcher extends Thread {
 			// if sizeFrom only specified
 			if(!gui.sizeFromText.getText().equals("") && gui.sizeToText.getText().equals(""))
 			{
-				return (file.length() / (1024 * 1024) > Integer.parseInt(gui.sizeFromText.getText()));
+				if((file.length() / (1024 * 1024)) < Integer.parseInt(gui.sizeFromText.getText()))
+					return false;
 			}
 			
 			// if sizeTo only specified
 			if(gui.sizeFromText.getText().equals("") && !gui.sizeToText.getText().equals(""))
 			{
-				return (file.length() / (1024 * 1024) < Integer.parseInt(gui.sizeToText.getText()));
+				if((file.length() / (1024 * 1024)) > Integer.parseInt(gui.sizeToText.getText()))
+					return false;
 			}
 			
 			// if both sizeTo AND sizeFrom specified
 			if(!gui.sizeFromText.getText().equals("") && !gui.sizeToText.getText().equals(""))
 			{
-				return (file.length() / (1024 * 1024) > Integer.parseInt(gui.sizeFromText.getText())
-						&& file.length() / (1024 * 1024) < Integer.parseInt(gui.sizeToText.getText()));
+				if((file.length() / (1024 * 1024)) < Integer.parseInt(gui.sizeFromText.getText())
+						|| (file.length() / (1024 * 1024)) > Integer.parseInt(gui.sizeToText.getText()))
+					return false;
 			}
 			
 			// if createdFrom only specified
 			if(createdFrom != null && createdTo == null)
 			{
-				return (new Date(file.lastModified()).after(this.createdFrom));
+				if(!new Date(file.lastModified()).after(this.createdFrom))
+					return false;
 			}
 			
 			// if createdTo only specified
 			if(createdFrom == null && createdTo != null)
 			{
-				return (new Date(file.lastModified()).before(this.createdTo));
+				if(!new Date(file.lastModified()).before(this.createdTo))
+					return false;
 			}
 			
 			// if both createdFrom AND createdTo specified
 			if(createdFrom != null && createdTo != null)
 			{
-				return
-					(new Date(file.lastModified()).after(this.createdFrom)) == true
-					&& (new Date(file.lastModified()).before(this.createdTo)) == true;
+				if((new Date(file.lastModified())).after(this.createdFrom) != true
+					|| ((new Date(file.lastModified())).before(this.createdTo)) != true)
+					return false;
 			}
 			
-			// if no mask was specified then file is appropriate
 			return true;
 		}
+		
 		return false;
 	}
 	
