@@ -5,12 +5,12 @@ Multithread Java Search Program
 **Current status: completed**
 ========
 Implemented functionality:
-	- files explorer
-	- search by keyword
-	- search by file size range
-	- search by file creation date range
-	- stop all threads immediately
-	- stop selected threads immediately (Ctrl + mouse click = select multiple threds to stop)
+- files explorer
+- search by keyword
+- search by file size range
+- search by file creation date range
+- stop all threads immediately
+- stop selected threads immediately (Ctrl + mouse click = select multiple threds to stop)
 
 **Wiki**
 ========
