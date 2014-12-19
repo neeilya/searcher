@@ -14,6 +14,8 @@ public class Searcher extends Thread {
 	private String key;
 	public File initialDirectory;
 	
+	// ------------------------------------------------------------------------------------------------------------
+	
 	/**
 	 * Constructor
 	 * @param gui
@@ -25,6 +27,8 @@ public class Searcher extends Thread {
 		this.key = this.gui.keyWordText.getText();
 		this.initialDirectory = initialDirectory;
 	}
+	
+	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
 	 * Search algorythm
@@ -56,6 +60,8 @@ public class Searcher extends Thread {
 		}
 
 	}
+	
+	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
 	 * Check if file corresponds to specified mask
@@ -89,6 +95,8 @@ public class Searcher extends Thread {
 		}
 		return false;
 	}
+	
+	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
 	 * Runnable

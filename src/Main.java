@@ -37,6 +37,8 @@ public class Main extends JFrame {
 				// reset count values from previous research if there was one
 				gui.clearAll();
 				
+				// -------------------------------------------------------------------------------
+				
 				/**
 				 * Check if keyWord is empty
 				 */
@@ -46,6 +48,8 @@ public class Main extends JFrame {
 					return;
 				}
 				
+				// -------------------------------------------------------------------------------
+				
 				/**
 				 * Check if list of directories is empty
 				 */
@@ -54,6 +58,8 @@ public class Main extends JFrame {
 					JOptionPane.showMessageDialog(null, "List of directories where to search cannot be empty");
 					return;
 				}
+				
+				// -------------------------------------------------------------------------------
 				
 				/**
 				 * Check sizeFrom range textfields
@@ -71,6 +77,8 @@ public class Main extends JFrame {
 					}
 				}
 				
+				// -------------------------------------------------------------------------------
+				
 				/**
 				 * Check sizeTo range textfields
 				 */
@@ -87,8 +95,12 @@ public class Main extends JFrame {
 					}
 				}
 				
+				// -------------------------------------------------------------------------------
+				
 				// disable corresponding GUI buttons while searching
 				gui.searchParamsEnabled(false);
+				
+				// -------------------------------------------------------------------------------
 				
 				// run thread for each selected directory
 				for(int i = 0; i < gui.selectedList.getSize(); ++i)
