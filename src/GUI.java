@@ -48,7 +48,7 @@ public class GUI extends JFrame {
 		rightArea;
 	
 	// tools panel stuff
-	public JTextField keyWordText, sizeFromText, sizeToText, timeCreationRangeText;
+	public JTextField keyWordText, sizeFromText, sizeToText, createdFromText, createdToText;
 	public JButton searchButton, stopAllButton, stopSelectedButton;
 	
 	// lists stuff
@@ -72,7 +72,8 @@ public class GUI extends JFrame {
 		sizeFromLabel,
 		sizeToLabel,
 		directoriesSelectedLabel,
-		timeCreationRangeLabel,
+		createdFromLabel,
+		createdToLabel,
 		sizeCountLabel;
 	
 	private long sizeCount = 0;
@@ -107,13 +108,15 @@ public class GUI extends JFrame {
 		this.stopSelectedButton = new JButton("Stop selected thread");
 		this.sizeFromLabel = new JLabel("size from (mb)", SwingConstants.RIGHT);
 		this.sizeToLabel = new JLabel("size to (mb)", SwingConstants.RIGHT);
-		this.timeCreationRangeLabel = new JLabel("<html>Time creation range<br/>dd/mm/YYYY-dd/mm/YYY</html>", SwingConstants.RIGHT);
+		this.createdFromLabel = new JLabel("<html>Created from<br/>dd/mm/YYYY</html>", SwingConstants.RIGHT);
+		this.createdToLabel = new JLabel("<html>Created to<br/>dd/mm/YYYY</html>", SwingConstants.RIGHT);
 		
 		 //init textFields
 		this.keyWordText = new JTextField();
 		this.sizeFromText = new JTextField();
 		this.sizeToText = new JTextField();
-		this.timeCreationRangeText = new JTextField();
+		this.createdFromText = new JTextField();
+		this.createdToText = new JTextField();
 		
 		//setting layout
 		this.setLayout(new BorderLayout());
@@ -131,8 +134,10 @@ public class GUI extends JFrame {
 		this.toolsPanel.add(sizeFromText);
 		this.toolsPanel.add(sizeToLabel);
 		this.toolsPanel.add(sizeToText);
-		this.toolsPanel.add(timeCreationRangeLabel);
-		this.toolsPanel.add(timeCreationRangeText);
+		this.toolsPanel.add(createdFromLabel);
+		this.toolsPanel.add(createdFromText);
+		this.toolsPanel.add(createdToLabel);
+		this.toolsPanel.add(createdToText);
 		this.toolsPanel.add(stopAllButton);
 		this.toolsPanel.add(stopSelectedButton);
 		
@@ -279,6 +284,13 @@ public class GUI extends JFrame {
 		threadsCountLabel.setText("Threads active: ");
 	}
 	
+	
+	public void removeThread(int index)
+	{
+		lock.lock();
+		this.threadList.remove(index);
+		lock.unlock();
+	}
 	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
@@ -291,7 +303,8 @@ public class GUI extends JFrame {
 		this.searchButton.setEnabled(enabled);	
 		this.sizeFromText.setEnabled(enabled);
 		this.sizeToText.setEnabled(enabled);
-		this.timeCreationRangeText.setEnabled(enabled);
+		this.createdFromText.setEnabled(enabled);
+		this.createdToText.setEnabled(enabled);
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------

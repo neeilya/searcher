@@ -1,4 +1,9 @@
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.SwingUtilities;
 
 /**
  * Searcher class
@@ -13,6 +18,7 @@ public class Searcher extends Thread {
 	private GUI gui;
 	private String key;
 	public File initialDirectory;
+	private Date createdFrom, createdTo;
 	
 	// ------------------------------------------------------------------------------------------------------------
 	
@@ -26,12 +32,49 @@ public class Searcher extends Thread {
 		this.gui = gui;
 		this.key = this.gui.keyWordText.getText();
 		this.initialDirectory = initialDirectory;
+		this.setDates(gui.createdFromText.getText(), gui.createdToText.getText());
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
-	 * Search algorythm
+	 * Set dates for search mask
+	 * @param dateFromStr
+	 * @param dateToStr
+	 */
+	private void setDates(String dateFromStr, String dateToStr)
+	{
+		if(!dateFromStr.equals(""))
+		{
+			try
+			{
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				this.createdFrom = dateFormat.parse(gui.createdFromText.getText());
+			}
+			catch (ParseException e)
+			{
+				// some code
+			}			
+		}
+
+		if(!dateToStr.equals(""))
+		{
+			try
+			{
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				this.createdTo = dateFormat.parse(gui.createdToText.getText());
+			}
+			catch (ParseException e)
+			{
+				// some code
+			}			
+		}
+	}
+	
+	// ------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * Search algorithm
 	 * @param path
 	 * @throws InterruptedException 
 	 */
@@ -68,7 +111,7 @@ public class Searcher extends Thread {
 	 * @param file
 	 * @return
 	 */
-	private boolean maskApproved(File file)
+	private boolean maskApproved(final File file)
 	{
 		if(file.getName().contains(this.key))
 		{
@@ -91,6 +134,27 @@ public class Searcher extends Thread {
 						&& file.length() / (1024 * 1024) < Integer.parseInt(gui.sizeToText.getText()));
 			}
 			
+			// if createdFrom only specified
+			if(createdFrom != null && createdTo == null)
+			{
+				return (new Date(file.lastModified()).after(this.createdFrom));
+			}
+			
+			// if createdTo only specified
+			if(createdFrom == null && createdTo != null)
+			{
+				return (new Date(file.lastModified()).before(this.createdTo));
+			}
+			
+			// if both createdFrom AND createdTo specified
+			if(createdFrom != null && createdTo != null)
+			{
+				return
+					(new Date(file.lastModified()).after(this.createdFrom)) == true
+					&& (new Date(file.lastModified()).before(this.createdTo)) == true;
+			}
+			
+			// if no mask was specified then file is appropriate
 			return true;
 		}
 		return false;
@@ -124,7 +188,14 @@ public class Searcher extends Thread {
 			final int t = i;
 			if(gui.selectedList.get(i).getAbsolutePath().equals(this.initialDirectory.getAbsolutePath()))
 			{
-				gui.selectedList.remove(t);
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						gui.selectedList.remove(t);
+					}
+				});
 			}
 		}
 		
@@ -133,7 +204,7 @@ public class Searcher extends Thread {
 		{
 			if(gui.threadList.get(i).getName().equals(this.getName()))
 			{
-				gui.threadList.remove(i);
+				gui.removeThread(i);
 				break;
 			}
 		}

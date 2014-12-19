@@ -15,6 +15,11 @@ import javax.swing.JOptionPane;
 public class Main extends JFrame {
 	
 	/**
+	 * Consts
+	 */
+	private static String dateMask = "^(0[1-9]|[1-2][0-9]|3[0-1])\\/(0[1-9]|1[0-2])\\/[0-9]{4}$";
+	
+	/**
 	 * Main method
 	 * @param args
 	 */
@@ -98,17 +103,36 @@ public class Main extends JFrame {
 					}
 				}
 				
+				// -------------------------------------------------------------------------------
+				
 				/**
-				 * Check creation date mask
+				 * Check createdFrom textField
 				 */
-				if(!gui.timeCreationRangeLabel.equals(""))
+				if(!gui.createdFromText.getText().equals(""))
 				{
-					Pattern pattern = Pattern.compile("^(0[1-9]|[1-2][0-9]|3[0-1])\\/(0[1-9]|1[0-2])\\/[0-9]{4}$");
-					Matcher matcher = pattern.matcher(gui.timeCreationRangeText.getText());
+					Pattern pattern = Pattern.compile(dateMask);
+					Matcher matcher = pattern.matcher(gui.createdFromText.getText());
 					
 					if(!matcher.matches())
 					{
-						JOptionPane.showMessageDialog(null, "Incorrect date format. Use dd/mm/YYYY");
+						JOptionPane.showMessageDialog(null, "Incorrect date format in \"created from\" field. Use dd/mm/YYYY");
+						return;
+					}
+				}
+				
+				// -------------------------------------------------------------------------------
+				
+				/**
+				 * Check createdTo textField
+				 */
+				if(!gui.createdToText.getText().equals(""))
+				{
+					Pattern pattern = Pattern.compile(dateMask);
+					Matcher matcher = pattern.matcher(gui.createdToText.getText());
+					
+					if(!matcher.matches())
+					{
+						JOptionPane.showMessageDialog(null, "Incorrect date format in \"created to\" field. Use dd/mm/YYYY");
 						return;
 					}
 				}
