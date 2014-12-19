@@ -29,8 +29,9 @@ public class Searcher extends Thread {
 	/**
 	 * Search algorythm
 	 * @param path
+	 * @throws InterruptedException 
 	 */
-	private void search(String path)
+	private void search(String path) throws InterruptedException
 	{
 		if(interrupted())
 		{
@@ -38,9 +39,8 @@ public class Searcher extends Thread {
 			 * Interrupt again because multiple calls of interrupted()
 			 * cause interrupted state to be false
 			 */
-			this.interrupt();
+			throw new InterruptedException("Interrupted");
 
-			return;
 		}
 		
 		File file = new File(path);
@@ -101,8 +101,15 @@ public class Searcher extends Thread {
 	@Override
 	public void run()
 	{
-		// run recursive search
-		search(this.initialDirectory.getPath());
+		try
+		{
+			// run recursive search
+			search(this.initialDirectory.getPath());
+		}
+		catch(InterruptedException e)
+		{
+			// some code
+		}
 
 		// update counter at GUI
 		gui.threadCounter--;
