@@ -287,13 +287,33 @@ public class GUI extends JFrame {
 		threadsCountLabel.setText("Threads active: ");
 	}
 	
+	// ------------------------------------------------------------------------------------------------------------
 	
-	public void removeThread(int index)
+	/**
+	 * Remove thread from thredList and GUI
+	 * @param index
+	 */
+	public void removeThread(final int index)
 	{
 		lock.lock();
-		this.threadList.remove(index);
-		lock.unlock();
+		
+		try
+		{
+			this.threadList.remove(index);
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				@Override
+				public void run() {
+					selectedList.remove(index);
+				}
+			});
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
+	
 	// ------------------------------------------------------------------------------------------------------------
 	
 	/**
@@ -429,26 +449,31 @@ public class GUI extends JFrame {
 	{
 		lock.lock();
 		
-		SwingUtilities.invokeLater(new Runnable()
+		try
 		{
-					
-			@Override
-			public void run()
+			SwingUtilities.invokeLater(new Runnable()
 			{
-				String fileName = file.toString();
-				fileName += ", last modified: " + (new Date(file.lastModified())).toString();
-				fileName += " , size: " + file.length() / (1024 * 1024) + " mbs";
-				resultList.addElement(fileName);
-
-				sizeCount = sizeCount + (file.length() / 1048576);
-				sizeCountLabel.setText("Total size: " + sizeCount + " megabytes");
 				
-				foundCount++;
-				foundCountLabel.setText("Found: " + foundCount + " files");
-			}
-		});
-		
-		lock.unlock();
+				@Override
+				public void run()
+				{
+					String fileName = file.toString();
+					fileName += ", last modified: " + (new Date(file.lastModified())).toString();
+					fileName += " , size: " + file.length() / (1024 * 1024) + " mbs";
+					resultList.addElement(fileName);
+					
+					sizeCount = sizeCount + (file.length() / 1048576);
+					sizeCountLabel.setText("Total size: " + sizeCount + " megabytes");
+					
+					foundCount++;
+					foundCountLabel.setText("Found: " + foundCount + " files");
+				}
+			});
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
 	
 	// ------------------------------------------------------------------------------------------------------------
@@ -547,4 +572,6 @@ public class GUI extends JFrame {
 			super.keyPressed(e);
 		}
 	}		
+
+	// ------------------------------------------------------------------------------------------------------------
 }

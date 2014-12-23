@@ -3,8 +3,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.SwingUtilities;
-
 /**
  * Searcher class
  * @author Ilya
@@ -187,23 +185,6 @@ public class Searcher extends Thread {
 		gui.threadCounter--;
 		gui.threadsCountLabel.setText("Threads active: " + gui.threadCounter);
 		
-		// remove finished thread from GUI
-		for(int i = 0; i < gui.selectedList.size(); ++i)
-		{
-			final int t = i;
-			if(gui.selectedList.get(i).getAbsolutePath().equals(this.initialDirectory.getAbsolutePath()))
-			{
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						gui.selectedList.remove(t);
-					}
-				});
-			}
-		}
-		
 		// remove finished thread from threadList
 		for(int i = 0; i < gui.threadList.size(); ++i)
 		{
@@ -228,4 +209,6 @@ public class Searcher extends Thread {
 			gui.directoriesSelectedLabel.setText("Selected directories: " + gui.directoriesSelectedCounter);
 		}
 	}
+
+	// ------------------------------------------------------------------------------------------------------------
 }
